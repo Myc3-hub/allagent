@@ -73,12 +73,26 @@ static/                # 前端(vanilla JS 单页,无构建)
 scripts/test_renderers.py  # 渲染器自检(手写 fixture,不含 LLM)
 ```
 
+## 公网部署(Render,免费)
+
+应用已支持**访客自带 API Key**模式:打开网页先弹窗输入使用者自己的 DeepSeek Key,
+各用各自额度,服务器无需配置任何密钥。
+
+1. 把本仓库推送到 GitHub(已含 `Dockerfile` 与 `render.yaml`)
+2. 打开 [render.com](https://render.com) → 用 GitHub 账号登录
+3. New → Blueprint → 选择仓库 → Apply(或 New → Web Service → 选仓库 → 运行时选 Docker → Free 方案)
+4. 等待 5~10 分钟构建完成,获得网址 `https://ai-agent-xxx.onrender.com` 即公网可用
+
 ## 已知限制与说明
 
-- **单机运行**:会话存储在内存 + `data/sessions.json`,服务固定单 worker 启动;
-  **面向客户公网部署前必须增加用户鉴权层**(v1 无账号体系,仅限本机使用)
+- **会话存储**:内存 + `data/sessions.json`,固定单 worker;本机部署可持久化,
+  Render 免费实例文件系统是临时的(重启后会话清空,不影响使用)
+- **访客 Key 安全**:Key 仅存于访客浏览器 localStorage,服务器不落盘;
+  传输走 HTTPS
+- **免费实例冷启动**:Render 免费版闲置 15 分钟后休眠,首次访问需等待约 30~60 秒唤醒
 - **公开数据检索为尽力而为**:不依赖第三方搜索 API,通过公开搜索页抓取;
   个别站点改版或反爬会导致该次检索为空(自动降级并明示,绝不虚构数据);
   商业部署建议接入正式搜索服务(如博查/Tavily)以获得稳定检索能力
 - **调研与文件生成耗时**:单次调研约 20~40 秒,单个文件生成约 15~60 秒
-- **PDF 依赖 Windows 中文字体**:`C:\Windows\Fonts` 下的微软雅黑/宋体/黑体,字体子集嵌入,交付文件可移植
+- **PDF 中文字体**:Windows 用系统微软雅黑/宋体/黑体;Linux(如 Render)自动回退到
+  随项目打包的思源黑体(`fonts/`),字体子集嵌入,交付文件可移植
