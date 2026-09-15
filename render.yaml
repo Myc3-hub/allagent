@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: ai-agent
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health

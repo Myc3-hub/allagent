@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>综合性AI运营智能体</title>
+  <link rel="stylesheet" href="/css/style.css?v=20260915c">
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand">综合性AI运营智能体</div>
+    <button id="btn-new" class="btn btn-primary">＋ 新建会话</button>
+    <ul id="session-list"></ul>
+    <button id="btn-key" class="btn">⚙ 设置 Key</button>
+  </aside>
+
+  <main id="chat">
+    <header id="chat-header">
+      <div id="chat-title">新会话</div>
+      <div id="chat-phase" class="phase-badge" hidden></div>
+    </header>
+
+    <div id="messages"></div>
+
+    <div id="file-bar" hidden></div>
+
+    <div id="input-row">
+      <textarea id="input" rows="1" placeholder="描述您的需求或任务,例如:我想做一个员工考勤系统… / 帮我写一篇年会发言稿…(Enter 发送,Shift+Enter 换行)"></textarea>
+      <button id="btn-send" class="btn btn-primary" disabled>发送</button>
+    </div>
+  </main>
+</div>
+<div id="toast" hidden></div>
+
+<div id="key-modal" hidden>
+  <div class="key-dialog">
+    <div class="key-title">欢迎使用综合性 AI 运营智能体</div>
+    <div class="key-sub">请输入您的 DeepSeek API Key 后开始使用:</div>
+    <input id="key-input" type="password" placeholder="sk-xxxxxxxxxxxxxxxx" autocomplete="off">
+    <div class="key-note">本应用按您的 Key 调用 DeepSeek 模型,费用记在您的账户。
+      Key 仅保存在您自己的浏览器中,服务器不存储。</div>
+    <div class="key-actions">
+      <button id="key-save" class="btn btn-primary">保存并开始</button>
+      <button id="key-cancel" class="btn" hidden>取消</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/app.js?v=20260915d"></script>
+</body>
+</html>
