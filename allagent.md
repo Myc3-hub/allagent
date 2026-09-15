@@ -120,24 +120,42 @@ meta → text(delta 逐字流) → questions(问题卡片)
 - **布局**:左侧会话栏(标识/新建会话/会话列表)+ 右侧聊天区(顶部标题+阶段徽标 / 消息流 / 文件按钮区 / 输入框)
 - **欢迎区**:打开页面即显示两大能力卡片(需求分析 / 文件生成,带小字说明),点击自动建会话并填入示例
 - **交互**:流式打字效果、调研进度卡、需求确认卡(含数据来源折叠列表)、导出文件快捷选择条、任务文件下载卡
-- **安全**:LLM 文本一律 `textContent` 渲染(防 XSS);API Key 仅存服务端 .env
-- **风格**:科技风——深蓝→青渐变主色、毛玻璃卡片、光晕背景、网格底纹
+- **安全**:LLM 文本一律 `textContent` 渲染(防 XSS);访客 Key 仅存浏览器 localStorage,请求经 X-API-Key 头传输,服务器不落盘
+- **风格**:科技风——深蓝→青渐变主色、毛玻璃卡片、光晕背景、网格底纹;首次使用弹出 Key 输入框,侧栏可随时更换 Key
 
 ## 八、运行与部署
+
+### 本机运行
 
 ```bash
 cd C:\Users\15298\projects\ai-agent
 python -m venv .venv
 .venv\Scripts\pip install -r requirements.txt
-# .env 中填入唯一的密钥:
+# .env 中填入唯一的密钥(可选,访客可自带 Key):
 #   DEEPSEEK_API_KEY=sk-xxx
 .venv\Scripts\python run.py
 # 浏览器打开 http://127.0.0.1:8000
 ```
 
+### 公网部署(Render,免费)
+
+1. 仓库已含 `Dockerfile` 与 `render.yaml`,推送到 GitHub
+2. render.com → GitHub 登录 → New → Blueprint → 选择仓库 → Apply
+3. 5~10 分钟构建完成,获得 `https://ai-agent-xxx.onrender.com` 公网网址
+
+### 访客自带 API Key 模式(公网版核心)
+
+- 打开网页先弹窗输入使用者**自己的 DeepSeek API Key**,各用各自额度,服务器无需配置密钥
+- Key 仅存于访客浏览器 localStorage,经 HTTPS 传输,服务器不落盘(sessions.json 持久化时排除)
+- 服务器按 Key 缓存 LLM 客户端,多访客互不影响;无 Key 时返回友好中文提示
+
+### 部署注意
+
 - **依赖**:fastapi、uvicorn、python-docx、python-pptx、openpyxl、reportlab、openai、httpx、jinja2、pydantic、python-dotenv、lxml
-- **会话持久化**:`data/sessions.json`,重启自动恢复;必须单 worker 运行
-- **v1 限制**:本机运行、无账号体系;公网部署前需加鉴权层;公开搜索抓取为尽力而为(商业部署建议接入正式搜索服务)
+- **会话持久化**:`data/sessions.json`,本机重启自动恢复;Render 免费实例文件系统为临时(重启清空,不影响使用)
+- **中文字体**:Windows 用系统微软雅黑/宋体/黑体;Linux 自动回退到打包的思源黑体(`fonts/`,字体子集嵌入)
+- **免费实例冷启动**:闲置 15 分钟后休眠,首次访问约 30~60 秒唤醒
+- **v1 限制**:公开搜索抓取为尽力而为(商业部署建议接入正式搜索服务)
 
 ## 九、项目结构
 
